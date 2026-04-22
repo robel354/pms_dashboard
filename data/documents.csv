@@ -1,0 +1,4 @@
+Document ID,Recipient ID,Plot ID,Recipient,Document Type,Status,FCA Signed,File URL,Photo URL,Last Updated
+D-001,R-001,P-001,Green Valley Cooperative,Agreement,Approved,Yes,https://example.com/docs/d-001,https://example.com/photos/p-001,2026-03-10
+D-002,R-002,P-003,Sunrise Growers,Verification Form,Pending,No,,https://example.com/photos/p-003,2026-03-15
+D-003,R-003,P-004,Highland Roots,Grant Report,Approved,Yes,https://example.com/docs/d-003,,2026-02-28

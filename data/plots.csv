@@ -1,0 +1,5 @@
+Plot ID,Recipient ID,Plot Name,Area Ha,Status,Species,Trees Received,Trees Planted,Seedlings Distributed,ER Planting Count,Latitude,Longitude
+P-001,R-001,River Block,2.5,Active,Grevillea,1200,950,300,140,-8.8383,13.2344
+P-002,R-001,Hillside Plot,1.8,Active,Avocado,850,700,220,85,-8.8587,13.2893
+P-003,R-002,East Field,3.2,Active,Calliandra,1400,1100,420,160,-12.5763,13.4055
+P-004,R-003,North Terrace,1.1,Inactive,Grevillea,400,280,90,40,-8.9587,13.1960

@@ -22,8 +22,8 @@ Thumbs.db
 # Streamlit
 .streamlit/secrets.toml
 
-# Local data exports (keep real Kobo exports out of git)
-data/*.xlsx
+# # Local data exports (keep real Kobo exports out of git)
+# data/*.xlsx
 
-# If you want to keep demo CSVs in the repo, remove this line.
-data/*.csv
+# # If you want to keep demo CSVs in the repo, remove this line.
+# data/*.csv
