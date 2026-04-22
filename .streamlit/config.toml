@@ -2,7 +2,8 @@
 headless = true
 enableCORS = false
 enableXsrfProtection = false
-port = 8000
+# Do not hardcode `port` for Streamlit Community Cloud.
+# The platform expects the app to bind to its provided port (defaults to 8501).
 
 [browser]
 gatherUsageStats = false
