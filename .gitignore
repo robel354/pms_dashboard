@@ -1,0 +1,29 @@
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Local data exports (keep real Kobo exports out of git)
+data/*.xlsx
+
+# If you want to keep demo CSVs in the repo, remove this line.
+data/*.csv

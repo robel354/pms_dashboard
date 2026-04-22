@@ -1,0 +1,395 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms" xmlns:odk="http://www.opendatakit.org/xforms">
+  <h:head>
+    <h:title>Grievance Intake Form</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <aqaoZVvbjGt2qKYi8pPSnj id="aqaoZVvbjGt2qKYi8pPSnj">
+          <start/>
+          <end/>
+          <extension_officer_id/>
+          <date_time/>
+          <submission_channel/>
+          <complainant_area/>
+          <complainant_area_other/>
+          <project_involved/>
+          <anonymous/>
+          <complainant_name/>
+          <complainant_communication/>
+          <complainant_meeting_place/>
+          <complainant_phone/>
+          <complainant_email/>
+          <grievance_type/>
+          <grievance_type_other/>
+          <grievance_description/>
+          <grievance_urgency/>
+          <immediate_action/>
+          <immediate_action_taken/>
+          <onsite_resolution/>
+          <grievance_severity/>
+          <extension_officer_observation/>
+          <photo_possible/>
+          <issue_photograph/>
+          <grievance_photo/>
+          <meta>
+            <instanceID/>
+          </meta>
+        </aqaoZVvbjGt2qKYi8pPSnj>
+      </instance>
+      <instance id="ju7yx68">
+        <root>
+          <item>
+            <name>in_person</name>
+            <label>In person</label>
+          </item>
+          <item>
+            <name>drop_box</name>
+            <label>Drop box</label>
+          </item>
+          <item>
+            <name>chatbot</name>
+            <label>WhatsApp Chatbot</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="jb8rp59">
+        <root>
+          <item>
+            <name>Luxiha</name>
+            <label>Luxiha</label>
+          </item>
+          <item>
+            <name>1st_may</name>
+            <label>1st May</label>
+          </item>
+          <item>
+            <name>kamwenyetulo</name>
+            <label>Kamwenyetulo</label>
+          </item>
+          <item>
+            <name>no_say</name>
+            <label>Prefer not to say</label>
+          </item>
+          <item>
+            <name>unknown</name>
+            <label>Unknown</label>
+          </item>
+          <item>
+            <name>other</name>
+            <label>Other</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="ox96r42">
+        <root>
+          <item>
+            <name>yes</name>
+            <label>Yes</label>
+          </item>
+          <item>
+            <name>no</name>
+            <label>No</label>
+          </item>
+          <item>
+            <name>no_say</name>
+            <label>Prefer not to say</label>
+          </item>
+          <item>
+            <name>unknown</name>
+            <label>Unknown</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="aj7ee33">
+        <root>
+          <item>
+            <name>yes</name>
+            <label>Yes</label>
+          </item>
+          <item>
+            <name>no</name>
+            <label>No</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="yo8jz87">
+        <root>
+          <item>
+            <name>in_person</name>
+            <label>In person</label>
+          </item>
+          <item>
+            <name>phone</name>
+            <label>Phone</label>
+          </item>
+          <item>
+            <name>email</name>
+            <label>Email</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="sc1dm92">
+        <root>
+          <item>
+            <name>church</name>
+            <label>Local Church</label>
+          </item>
+          <item>
+            <name>soba_office</name>
+            <label>Soba Office</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="ni9fh26">
+        <root>
+          <item>
+            <name>land_issue</name>
+            <label>Land / boundary issue</label>
+          </item>
+          <item>
+            <name>benefits</name>
+            <label>Benefit distribution</label>
+          </item>
+          <item>
+            <name>labour_employment</name>
+            <label>Labour / employment</label>
+          </item>
+          <item>
+            <name>environmental</name>
+            <label>Environmental concern</label>
+          </item>
+          <item>
+            <name>social_conflict</name>
+            <label>Social conflict</label>
+          </item>
+          <item>
+            <name>staff_conduct</name>
+            <label>Project staff conduct</label>
+          </item>
+          <item>
+            <name>participation_consent</name>
+            <label>Participation &amp; consent</label>
+          </item>
+          <item>
+            <name>other</name>
+            <label>Other</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="bz5py53">
+        <root>
+          <item>
+            <name>yes</name>
+            <label>Yes</label>
+          </item>
+          <item>
+            <name>no</name>
+            <label>No</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="st3eb67">
+        <root>
+          <item>
+            <name>yes</name>
+            <label>Yes</label>
+          </item>
+          <item>
+            <name>no</name>
+            <label>No</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="he9go74">
+        <root>
+          <item>
+            <name>yes</name>
+            <label>Yes</label>
+          </item>
+          <item>
+            <name>no</name>
+            <label>No</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="gq1xy11">
+        <root>
+          <item>
+            <name>low</name>
+            <label>Low</label>
+          </item>
+          <item>
+            <name>medium</name>
+            <label>Medium</label>
+          </item>
+          <item>
+            <name>high</name>
+            <label>High</label>
+          </item>
+        </root>
+      </instance>
+      <instance id="yk8qd87">
+        <root>
+          <item>
+            <name>yes</name>
+            <label>Yes</label>
+          </item>
+          <item>
+            <name>no</name>
+            <label>No</label>
+          </item>
+        </root>
+      </instance>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/start" jr:preload="timestamp" type="dateTime" jr:preloadParams="start"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/end" jr:preload="timestamp" type="dateTime" jr:preloadParams="end"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/extension_officer_id" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/date_time" type="dateTime" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/submission_channel" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/complainant_area" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/complainant_area_other" type="string" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/complainant_area  = 'other'" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/project_involved" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/anonymous" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/complainant_name" type="string" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/anonymous  = 'no'" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/complainant_communication" type="string" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/anonymous  = 'no'" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/complainant_meeting_place" type="string" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/complainant_communication  = 'in_person'" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/complainant_phone" type="int" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/complainant_communication  = 'phone'" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/complainant_email" type="string" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/complainant_communication  = 'email'" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/grievance_type" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/grievance_type_other" type="string" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/grievance_type  = 'other'" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/grievance_description" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/grievance_urgency" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/immediate_action" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/immediate_action_taken" type="string" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/immediate_action  = 'yes'" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/onsite_resolution" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/grievance_severity" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/extension_officer_observation" type="string" required="false()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/photo_possible" type="string" required="true()"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/issue_photograph" type="binary" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/photo_possible  = 'yes'" required="true()" orx:max-pixels="2048"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/grievance_photo" type="binary" relevant=" /aqaoZVvbjGt2qKYi8pPSnj/submission_channel  = 'drop_box'" required="true()" orx:max-pixels="2048"/>
+      <bind nodeset="/aqaoZVvbjGt2qKYi8pPSnj/meta/instanceID" type="string" readonly="true()" jr:preload="uid"/>
+    </model>
+  </h:head>
+  <h:body>
+    <input ref="/aqaoZVvbjGt2qKYi8pPSnj/extension_officer_id">
+      <label>Extension Officer ID</label>
+    </input>
+    <input ref="/aqaoZVvbjGt2qKYi8pPSnj/date_time">
+      <label>Enter a date and time</label>
+    </input>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/submission_channel">
+      <label>Submission channel</label>
+      <itemset nodeset="instance('ju7yx68')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/complainant_area">
+      <label>Which community or area is the complainant from?</label>
+      <itemset nodeset="instance('jb8rp59')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input ref="/aqaoZVvbjGt2qKYi8pPSnj/complainant_area_other">
+      <label>Please specify which area the complainant is from.</label>
+    </input>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/project_involved">
+      <label>Is the complainant involved with the project?</label>
+      <itemset nodeset="instance('ox96r42')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/anonymous">
+      <label>Is the submission anonymous?</label>
+      <itemset nodeset="instance('aj7ee33')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input ref="/aqaoZVvbjGt2qKYi8pPSnj/complainant_name">
+      <label>What is the complainant's name?</label>
+    </input>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/complainant_communication">
+      <label>What is the complainant's preferred form of communication</label>
+      <itemset nodeset="instance('yo8jz87')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/complainant_meeting_place">
+      <label>Where would the complainant prefer to meet to receive any updates on the grievance?</label>
+      <itemset nodeset="instance('sc1dm92')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input ref="/aqaoZVvbjGt2qKYi8pPSnj/complainant_phone">
+      <label>What is the complainant's phone number?</label>
+    </input>
+    <input ref="/aqaoZVvbjGt2qKYi8pPSnj/complainant_email">
+      <label>What is the complainant's email adress?</label>
+    </input>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/grievance_type">
+      <label>What type of grievance is this?</label>
+      <itemset nodeset="instance('ni9fh26')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input ref="/aqaoZVvbjGt2qKYi8pPSnj/grievance_type_other">
+      <label>Please describe what other type of issue.</label>
+    </input>
+    <input appearance="multiline" ref="/aqaoZVvbjGt2qKYi8pPSnj/grievance_description">
+      <label>Description of the grievance.</label>
+    </input>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/grievance_urgency">
+      <label>Is this grievance urgent?</label>
+      <itemset nodeset="instance('bz5py53')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/immediate_action">
+      <label>Was any immediate action taken?</label>
+      <itemset nodeset="instance('st3eb67')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input appearance="multiline" ref="/aqaoZVvbjGt2qKYi8pPSnj/immediate_action_taken">
+      <label>What immediate action was taken?</label>
+    </input>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/onsite_resolution">
+      <label>Was it resolved on site?</label>
+      <itemset nodeset="instance('he9go74')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/grievance_severity">
+      <label>What is the severity level of the grievance?</label>
+      <itemset nodeset="instance('gq1xy11')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input appearance="multiline" ref="/aqaoZVvbjGt2qKYi8pPSnj/extension_officer_observation">
+      <label>Extension Officer Observations, if any.</label>
+      <hint>Add any relevant observations or context based on your visit. Do not modify the grievance description.</hint>
+    </input>
+    <select1 ref="/aqaoZVvbjGt2qKYi8pPSnj/photo_possible">
+      <label>If applicable, is it possible to take a photograph of the issue?</label>
+      <itemset nodeset="instance('yk8qd87')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <upload mediatype="image/*" ref="/aqaoZVvbjGt2qKYi8pPSnj/issue_photograph">
+      <label>Please take a photograph of the issue.</label>
+    </upload>
+    <upload mediatype="image/*" ref="/aqaoZVvbjGt2qKYi8pPSnj/grievance_photo">
+      <label>Please take a photograph of the grievance submitted through the drop box</label>
+    </upload>
+  </h:body>
+</h:html>
