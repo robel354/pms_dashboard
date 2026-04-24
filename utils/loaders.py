@@ -39,6 +39,11 @@ def _parse_csv_bytes_cached(csv_bytes: bytes) -> pd.DataFrame:
 def _read_excel_cached(path: str, *, sheet_name: str | int | None = 0) -> pd.DataFrame:
     return pd.read_excel(path, sheet_name=sheet_name)
 
+@st.cache_data(show_spinner=False)
+def _read_kobo_labels_csv_cached(path: str) -> pd.DataFrame:
+    # Kobo "labels" exports commonly use semicolons with quoted fields.
+    return pd.read_csv(path, sep=";", quotechar='"', dtype="string", keep_default_na=False)
+
 
 def _empty_frame(required_columns: list[str] | None = None) -> pd.DataFrame:
     return pd.DataFrame(columns=required_columns or [])
@@ -175,3 +180,35 @@ def load_nursery_qaqc() -> pd.DataFrame:
 
 def load_trees_seedlings() -> pd.DataFrame:
     return load_plots()
+
+
+def load_farmer_registration() -> pd.DataFrame:
+    """Load the Kobo farmer registration + parcel mapping export (labels CSV).
+
+    This dataset is intentionally loaded from the local `data/` directory for MVP use.
+    """
+    if USE_AZURE_STORAGE:
+        st.warning(
+            "Farmer registration data is not configured for Azure storage yet. Returning an empty dataset."
+        )
+        return pd.DataFrame()
+
+    data_dir = Path(DATA_DIR)
+    candidates = sorted(
+        data_dir.glob("Farmer_Registration_and_Parcel_Mapping_Form*_labels_*.csv"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    if not candidates:
+        st.warning(
+            "Farmer registration export was not found in the data directory. Returning an empty dataset."
+        )
+        return pd.DataFrame()
+
+    try:
+        raw = _read_kobo_labels_csv_cached(str(candidates[0]))
+    except Exception as exc:
+        st.warning(f"Farmer registration export could not be loaded: {exc}. Returning an empty dataset.")
+        return pd.DataFrame()
+
+    return normalize_columns(raw)

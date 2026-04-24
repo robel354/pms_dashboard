@@ -4,8 +4,10 @@ import pandas as pd
 import streamlit as st
 
 from utils.auth import AuthContext
+from utils.config import ENTITY_NAME
 from utils.loaders import load_documents
 from utils.storage import has_document_reference, resolve_document_access_url
+from utils.transforms import format_column_name, ui_safe_frame
 
 
 def _safe_filter_options(frame: pd.DataFrame, column: str) -> list[str]:
@@ -80,26 +82,38 @@ def _build_document_display_frame(frame: pd.DataFrame) -> pd.DataFrame:
 
 def _build_column_config(display_frame: pd.DataFrame) -> dict[str, object]:
     column_config: dict[str, object] = {}
-    if "view_document" in display_frame.columns:
-        column_config["view_document"] = st.column_config.LinkColumn(
-            "View document",
+    view_col = format_column_name(
+        "view_document",
+        overrides={"view_document": "View Document"},
+    )
+    if view_col in display_frame.columns:
+        column_config[view_col] = st.column_config.LinkColumn(
+            "View Document",
             display_text="Open",
         )
-    if "document_reference_available" in display_frame.columns:
-        column_config["document_reference_available"] = st.column_config.CheckboxColumn(
-            "Document on File",
+    doc_on_file_col = format_column_name(
+        "document_reference_available",
+        overrides={"document_reference_available": "Document On File"},
+    )
+    if doc_on_file_col in display_frame.columns:
+        column_config[doc_on_file_col] = st.column_config.CheckboxColumn(
+            "Document On File",
             disabled=True,
         )
-    if "photo_reference_available" in display_frame.columns:
-        column_config["photo_reference_available"] = st.column_config.CheckboxColumn(
-            "Photo on File",
+    photo_on_file_col = format_column_name(
+        "photo_reference_available",
+        overrides={"photo_reference_available": "Photo On File"},
+    )
+    if photo_on_file_col in display_frame.columns:
+        column_config[photo_on_file_col] = st.column_config.CheckboxColumn(
+            "Photo On File",
             disabled=True,
         )
     return column_config
 
 
 def _render_document_links(frame: pd.DataFrame) -> None:
-    st.subheader("Secure Document Access")
+    st.subheader("Document Access")
 
     if frame.empty:
         st.info("No document records are available for the current selection.")
@@ -114,7 +128,7 @@ def _render_document_links(frame: pd.DataFrame) -> None:
         st.info("No secure document references are available for the current selection.")
         return
 
-    secure_links_available = False
+    links_available = False
     for _, row in linked_documents.iterrows():
         access_url = resolve_document_access_url(row.get("file_url"))
         if not access_url:
@@ -122,12 +136,10 @@ def _render_document_links(frame: pd.DataFrame) -> None:
         document_id = row.get("document_id", "Document")
         document_type = row.get("document_type", "File")
         st.markdown(f"- [{document_id} - {document_type}]({access_url})")
-        secure_links_available = True
+        links_available = True
 
-    if not secure_links_available:
-        st.info(
-            "Document references are present, but direct links are intentionally hidden until a private access flow is configured."
-        )
+    if not links_available:
+        st.info("No document links are available for the current selection.")
 
 
 def render(auth_context: AuthContext) -> None:
@@ -147,7 +159,7 @@ def render(auth_context: AuthContext) -> None:
     if "recipient_id" in frame.columns:
         recipient_options = ["All"] + _safe_filter_options(frame, "recipient_id")
         selected_recipient = filter_columns[0].selectbox(
-            "Recipient ID",
+            f"{ENTITY_NAME} ID",
             recipient_options,
             key="documents_recipient_id",
         )
@@ -158,7 +170,7 @@ def render(auth_context: AuthContext) -> None:
     elif "recipient" in frame.columns:
         recipient_options = ["All"] + _safe_filter_options(frame, "recipient")
         selected_recipient_name = filter_columns[0].selectbox(
-            "Recipient",
+            ENTITY_NAME,
             recipient_options,
             key="documents_recipient_name",
         )
@@ -202,6 +214,17 @@ def render(auth_context: AuthContext) -> None:
         return
 
     display_frame = _build_document_display_frame(filtered_frame)
+    display_frame = ui_safe_frame(
+        display_frame,
+        column_overrides={
+            "recipient_id": f"{ENTITY_NAME} ID",
+            "recipient": ENTITY_NAME,
+            "view_document": "View Document",
+            "document_reference_available": "Document On File",
+            "photo_reference_available": "Photo On File",
+        },
+        rename_columns=True,
+    )
     st.dataframe(
         display_frame,
         use_container_width=True,
@@ -210,5 +233,5 @@ def render(auth_context: AuthContext) -> None:
     )
 
     st.caption(
-        "Raw document, photo, signature, and scan URLs are not exposed in the UI. Private access should be routed through the storage layer."
+        "If a document URL exists, it is shown as a clickable link for demo viewing."
     )

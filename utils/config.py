@@ -29,6 +29,7 @@ def _parse_bool(raw_value: str, default: bool = False) -> bool:
 APP_TITLE: Final[str] = _get_env("APP_TITLE", "Recipient Dashboard")
 PAGE_ICON: Final[str] = _get_env("PAGE_ICON", ":seedling:")
 APP_ENV: Final[str] = _get_env("APP_ENV", "development")
+ENTITY_NAME: Final[str] = _get_env("ENTITY_NAME", "Farmer")
 AUTH_ENABLED: Final[bool] = _parse_bool(_get_env("AUTH_ENABLED", "false"))
 DATA_DIR: Final[Path] = (BASE_DIR / _get_env("DATA_DIR", "data")).resolve()
 ALLOWED_EMAILS: Final[list[str]] = _parse_csv_list(_get_env("ALLOWED_EMAILS", ""))

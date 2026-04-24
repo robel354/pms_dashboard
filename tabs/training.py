@@ -4,7 +4,9 @@ import pandas as pd
 import streamlit as st
 
 from utils.auth import AuthContext
+from utils.config import ENTITY_NAME
 from utils.loaders import load_training
+from utils.transforms import ui_safe_frame
 
 
 def render(auth_context: AuthContext) -> None:
@@ -25,7 +27,7 @@ def render(auth_context: AuthContext) -> None:
     if "recipient_id" in frame.columns:
         recipient_options = ["All"] + frame["recipient_id"].dropna().astype("string").sort_values().unique().tolist()
         selected_recipient = filter_col1.selectbox(
-            "Recipient ID",
+            f"{ENTITY_NAME} ID",
             recipient_options,
             key="training_recipient_id",
         )
@@ -97,4 +99,4 @@ def render(auth_context: AuthContext) -> None:
     for column in numeric_columns:
         display_frame[column] = pd.to_numeric(display_frame[column], errors="coerce")
 
-    st.dataframe(display_frame, use_container_width=True, hide_index=True)
+    st.dataframe(ui_safe_frame(display_frame), use_container_width=True, hide_index=True)

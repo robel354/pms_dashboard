@@ -5,7 +5,7 @@ import streamlit as st
 
 from utils.auth import AuthContext
 from utils.loaders import load_nursery_batch_intake, load_nursery_qaqc
-from utils.transforms import ensure_columns, summarize_nursery_batch_metrics
+from utils.transforms import ensure_columns, summarize_nursery_batch_metrics, ui_safe_frame
 
 
 def _safe_numeric_sum(frame: pd.DataFrame, column: str) -> int:
@@ -26,8 +26,8 @@ def _apply_filters(batch_frame: pd.DataFrame) -> pd.DataFrame:
     filter_columns = st.columns(3)
     filter_mapping = [
         ("batch_id", "Batch ID"),
+        ("nursery_name", "Supplier"),
         ("species", "Species"),
-        ("intended_project_activity", "Intended Project Activity"),
     ]
 
     for index, (column, label) in enumerate(filter_mapping):
@@ -79,7 +79,7 @@ def _render_species_breakdown(batch_frame: pd.DataFrame) -> None:
         .reset_index()
         .sort_values("total_seedlings", ascending=False)
     )
-    st.dataframe(species_breakdown, use_container_width=True, hide_index=True)
+    st.dataframe(ui_safe_frame(species_breakdown), use_container_width=True, hide_index=True)
 
 
 def _render_batch_summary(batch_frame: pd.DataFrame, qaqc_frame: pd.DataFrame) -> None:
@@ -89,7 +89,7 @@ def _render_batch_summary(batch_frame: pd.DataFrame, qaqc_frame: pd.DataFrame) -
         return
 
     summary_frame = summarize_nursery_batch_metrics(batch_frame, qaqc_frame)
-    st.dataframe(summary_frame, use_container_width=True, hide_index=True)
+    st.dataframe(ui_safe_frame(summary_frame), use_container_width=True, hide_index=True)
 
 
 def _render_qaqc_table(qaqc_frame: pd.DataFrame) -> None:
@@ -112,7 +112,7 @@ def _render_qaqc_table(qaqc_frame: pd.DataFrame) -> None:
     ]
     visible_columns = [column for column in preferred_columns if column in qaqc_frame.columns]
     display_frame = qaqc_frame[visible_columns].copy() if visible_columns else qaqc_frame.copy()
-    st.dataframe(display_frame, use_container_width=True, hide_index=True)
+    st.dataframe(ui_safe_frame(display_frame), use_container_width=True, hide_index=True)
 
 
 def render(auth_context: AuthContext) -> None:

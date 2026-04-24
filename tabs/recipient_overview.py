@@ -1,141 +1,237 @@
 from __future__ import annotations
 
+import re
+
 import pandas as pd
 import streamlit as st
 
 from utils.auth import AuthContext
-from utils.loaders import load_plots, load_recipients, load_training
-from utils.transforms import parse_lat_long_columns
+from utils.config import ENTITY_NAME
+from utils.loaders import load_farmer_registration
+
+ENTITY_LABEL = ENTITY_NAME
+NOT_AVAILABLE = "Not Available"
+
+_SMALL_KV_STYLE = "font-size:0.9rem; line-height:1.3;"
 
 
-def _safe_series_sum(frame: pd.DataFrame, column: str) -> float:
-    if column not in frame.columns or frame.empty:
-        return 0.0
-    return float(pd.to_numeric(frame[column], errors="coerce").fillna(0).sum())
+def _render_small_kv_row(items: list[tuple[str, str]]) -> None:
+    """Render a compact, responsive row of key/value cards.
 
-
-def _safe_unique_count(frame: pd.DataFrame, column: str) -> int:
-    if column not in frame.columns or frame.empty:
-        return 0
-    return int(frame[column].dropna().nunique())
-
-
-def _filter_by_recipient(frame: pd.DataFrame, recipient_id: str, recipient_name: str) -> pd.DataFrame:
-    """Return records linked to the selected recipient using the best available key."""
-    if frame.empty:
-        return frame
-
-    if "recipient_id" in frame.columns:
-        return frame[frame["recipient_id"].astype("string") == recipient_id].copy()
-
-    if "recipient_name" in frame.columns:
-        return frame[frame["recipient_name"].astype("string") == recipient_name].copy()
-
-    if "recipient" in frame.columns:
-        return frame[frame["recipient"].astype("string") == recipient_name].copy()
-
-    return frame.iloc[0:0].copy()
-
-
-def _render_map(plots: pd.DataFrame) -> None:
-    st.subheader("Plot Map")
-    show_map = st.checkbox(
-        "Show GPS-linked plot map",
-        value=False,
-        help="Plot coordinates are sensitive and are hidden by default.",
+    Using a single flex container avoids Streamlit column spacing quirks that can
+    misalign items on wide layouts.
+    """
+    cards = "".join(
+        f"<div style='flex:1 1 320px; min-width:320px; padding:12px 14px; border:1px solid rgba(49, 51, 63, 0.12); border-radius:12px; { _SMALL_KV_STYLE }'>"
+        f"<div style='font-weight:600; margin-bottom:4px;'>{label}</div>"
+        f"<div style='white-space:normal; overflow-wrap:anywhere;'>{value}</div>"
+        f"</div>"
+        for label, value in items
     )
-    if not show_map:
-        st.info("GPS-linked plot records are hidden by default. Enable the map only when needed.")
-        return
-
-    plot_locations = parse_lat_long_columns(plots)
-    valid_locations = plot_locations.dropna(subset=["latitude", "longitude"])
-    if valid_locations.empty:
-        st.info("No valid latitude and longitude values are available for this recipient's plots yet.")
-        return
-
-    st.map(valid_locations[["latitude", "longitude"]], use_container_width=True)
+    st.markdown(
+        "<div style='display:flex; flex-wrap:wrap; gap:24px; align-items:stretch; width:100%; margin:8px 0 18px 0;'>"
+        f"{cards}"
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
 
-def _render_plot_table(plots: pd.DataFrame) -> None:
-    st.subheader("Plots")
-    if plots.empty:
-        st.info("No plot records are available for the selected recipient.")
-        return
+def _na(value: object) -> str:
+    raw = str(value).strip() if value is not None else ""
+    return raw if raw else NOT_AVAILABLE
 
-    preferred_columns = [
-        "plot_id",
-        "plot_name",
-        "area_ha",
-        "status",
-        "trees_received",
-        "trees_planted",
-        "seedlings_distributed",
+
+def _titleize(column_name: str) -> str:
+    cleaned = re.sub(r"[_/]+", " ", str(column_name)).strip()
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    return cleaned.title()
+
+
+def _get_first_present(record: pd.Series, candidates: list[str]) -> str:
+    for column in candidates:
+        if column in record.index:
+            value = _na(record.get(column))
+            if value != NOT_AVAILABLE:
+                return value
+    return NOT_AVAILABLE
+
+
+def _parse_float(value: object) -> float | None:
+    try:
+        text = str(value).strip()
+        if not text:
+            return None
+        return float(text)
+    except Exception:
+        return None
+
+
+def _extract_lat_lon(record: pd.Series) -> tuple[float | None, float | None]:
+    lat = _parse_float(record.get("homestead_gps_coordinates_latitude"))
+    lon = _parse_float(record.get("homestead_gps_coordinates_longitude"))
+    if lat is not None and lon is not None:
+        return lat, lon
+
+    # Fallback to parsing the geopoint string: "-11.78 19.91 0 0"
+    raw_point = str(record.get("homestead_gps_coordinates") or "").strip()
+    parts = raw_point.split()
+    if len(parts) >= 2:
+        lat2 = _parse_float(parts[0])
+        lon2 = _parse_float(parts[1])
+        return lat2, lon2
+
+    return None, None
+
+
+def _render_registration_details(record: pd.Series) -> None:
+    st.subheader(f"{ENTITY_LABEL} Summary")
+
+    first_name = _na(record.get("first_name_of_household_head_or_primary_participant"))
+    last_name = _na(record.get("last_name_of_household_head_or_primary_participant"))
+    full_name = " ".join(part for part in [first_name, last_name] if part != NOT_AVAILABLE).strip() or NOT_AVAILABLE
+
+    registration_id = _get_first_present(
+        record,
+        [
+            "participant_registration_id",
+            "manual_registration_id",
+            "national_id_number",
+        ],
+    )
+
+    _render_small_kv_row(
+        [
+            ("Registration ID", registration_id),
+            ("Name", full_name),
+            ("Village", _na(record.get("village"))),
+        ]
+    )
+
+    sections: list[tuple[str, list[tuple[str, str]]]] = [
+        (
+            "Identity",
+            [
+                ("Gender", _na(record.get("gender_of_primary_participant"))),
+                ("Date Of Birth", _na(record.get("date_of_birth"))),
+                ("National Id", _na(record.get("national_id"))),
+                ("National Id Number", _na(record.get("national_id_number"))),
+            ],
+        ),
+        (
+            "Contact",
+            [
+                ("Phone Access", _na(record.get("phone_access"))),
+                ("Primary Phone / WhatsApp", _na(record.get("primary_phone_or_whatsapp_number"))),
+                ("Email Address", _na(record.get("email_address"))),
+                ("Preferred Communication Channel", _na(record.get("preferred_communication_channel"))),
+                ("Preferred Language", _na(record.get("preferred_language"))),
+            ],
+        ),
+        (
+            "Co-Owner (If Applicable)",
+            [
+                ("Co-Owner First Name", _na(record.get("farm_co_owner_first_name_if_applicable"))),
+                ("Co-Owner Second Name", _na(record.get("farm_co_owner_second_name_if_applicable"))),
+            ],
+        ),
     ]
-    visible_columns = [column for column in preferred_columns if column in plots.columns]
-    display_frame = plots[visible_columns] if visible_columns else plots
-    st.dataframe(display_frame, use_container_width=True, hide_index=True)
+
+    for title, items in sections:
+        with st.expander(title, expanded=False):
+            detail_frame = pd.DataFrame(items, columns=["Field", "Value"])
+            st.dataframe(detail_frame, use_container_width=True, hide_index=True)
+
+
+def _render_parcel_mapping(record: pd.Series) -> None:
+    st.subheader("Parcel Mapping")
+
+    lat, lon = _extract_lat_lon(record)
+    has_coords = lat is not None and lon is not None
+
+    _render_small_kv_row(
+        [
+            ("Homestead Latitude", f"{lat:.6f}" if lat is not None else NOT_AVAILABLE),
+            ("Homestead Longitude", f"{lon:.6f}" if lon is not None else NOT_AVAILABLE),
+            ("Parcel Boundary Mapping", _na(record.get("parcel_boundary_mapping"))),
+        ]
+    )
+
+    if has_coords:
+        show_map = st.checkbox(
+            "Show homestead location on map",
+            value=False,
+            help="Coordinates are sensitive. Keep hidden unless needed.",
+            key="recipient_overview_show_map",
+        )
+        if show_map:
+            st.map(
+                pd.DataFrame([{"latitude": lat, "longitude": lon}]),
+                use_container_width=True,
+            )
+    else:
+        st.info("No usable GPS coordinates were found for this registration.")
+
+    with st.expander("Land Tenure & Disputes", expanded=False):
+        tenure_items = [
+            ("Land Tenure Type", _na(record.get("land_tenure_type"))),
+            ("Tenure Evidence", _na(record.get("tenure_evidence"))),
+            ("Known Disputes Or Overlapping Claims", _na(record.get("known_disputes_or_overlapping_claims"))),
+            ("Description Of Dispute Or Overlap", _na(record.get("description_of_dispute_or_overlap"))),
+        ]
+        st.dataframe(pd.DataFrame(tenure_items, columns=["Field", "Value"]), use_container_width=True, hide_index=True)
+
+    with st.expander("FCA Status", expanded=False):
+        fca_items = [
+            ("Fca Signed", _na(record.get("has_the_participant_signed_a_farmer_and_community_agreement_fca_form"))),
+            ("Submission Time", _na(record.get("submission_time"))),
+            ("Submitted By", _na(record.get("submitted_by"))),
+            ("Status", _na(record.get("status"))),
+        ]
+        st.dataframe(pd.DataFrame(fca_items, columns=["Field", "Value"]), use_container_width=True, hide_index=True)
 
 
 def render(auth_context: AuthContext) -> None:
-    """Render the recipient summary view with plot, training, and map details."""
-    recipients = load_recipients()
-    plots = load_plots()
-    training = load_training()
+    """Render the farmer/recipient registration + parcel mapping workflow (Kobo export)."""
+    frame = load_farmer_registration()
 
-    st.header("Recipient Overview")
+    st.header(f"{ENTITY_LABEL} Overview")
     st.caption(f"Signed in as: `{auth_context.user_display_name}`")
 
-    if recipients.empty or "recipient_id" not in recipients.columns:
-        st.info("Recipient data is not available yet. Add `recipients.csv` with a `recipient_id` column to populate this view.")
+    if frame.empty:
+        st.info(
+            "Registration data is not available yet. Add the Kobo CSV export for the Farmer Registration and Parcel Mapping Form to populate this view."
+        )
         return
 
-    recipient_options = recipients["recipient_id"].dropna().astype("string").tolist()
-    if not recipient_options:
-        st.info("Recipient data loaded, but no usable `recipient_id` values were found.")
-        return
-
-    selected_recipient_id = st.selectbox(
-        "Recipient ID",
-        recipient_options,
-        key="recipient_overview_recipient_id",
+    # Interpretation note:
+    # The provided Kobo export appears to be one row per registered farmer/household,
+    # with homestead GPS fields embedded in the same row (no flattened repeat-group parcels observed).
+    id_column = (
+        "participant_registration_id"
+        if "participant_registration_id" in frame.columns
+        else ("manual_registration_id" if "manual_registration_id" in frame.columns else None)
     )
-    selected_recipient = recipients[
-        recipients["recipient_id"].astype("string") == selected_recipient_id
-    ].copy()
-
-    if selected_recipient.empty:
-        st.info("No recipient record matched the selected Recipient ID.")
+    if id_column is None:
+        st.info("No usable registration identifier column was found in the export.")
         return
 
-    recipient_name = str(selected_recipient["recipient_name"].iloc[0]) if "recipient_name" in selected_recipient.columns else selected_recipient_id
-    filtered_plots = _filter_by_recipient(plots, selected_recipient_id, recipient_name)
-    filtered_training = _filter_by_recipient(training, selected_recipient_id, recipient_name)
+    options = frame[id_column].dropna().astype("string").tolist()
+    options = [value for value in options if str(value).strip()]
+    if not options:
+        st.info("Registration data loaded, but no usable registration IDs were found.")
+        return
 
-    if filtered_training.empty:
-        training_sessions = 0
-    elif "completed" in filtered_training.columns:
-        completed_values = pd.to_numeric(filtered_training["completed"], errors="coerce")
-        training_sessions = int(completed_values.fillna(0).gt(0).sum())
-    else:
-        training_sessions = len(filtered_training.index)
+    selected_id = st.selectbox(
+        f"{ENTITY_LABEL} Registration Id",
+        options,
+        key="recipient_overview_registration_id",
+    )
 
-    st.write(f"Showing summary for **{recipient_name}** (`{selected_recipient_id}`).")
+    selected = frame[frame[id_column].astype("string") == selected_id]
+    if selected.empty:
+        st.info("No registration record matched the selected registration ID.")
+        return
 
-    col1, col2, col3 = st.columns(3)
-    col4, col5, col6 = st.columns(3)
-    col1.metric("Number of Plots", _safe_unique_count(filtered_plots, "plot_id"))
-    col2.metric("Hectares Cultivated", f"{_safe_series_sum(filtered_plots, 'area_ha'):.2f}")
-    col3.metric("Training Sessions", training_sessions)
-    col4.metric("Trees Received", f"{_safe_series_sum(filtered_plots, 'trees_received'):.0f}")
-    col5.metric("Trees Planted", f"{_safe_series_sum(filtered_plots, 'trees_planted'):.0f}")
-    col6.metric("Seedlings Distributed", f"{_safe_series_sum(filtered_plots, 'seedlings_distributed'):.0f}")
-
-    _render_plot_table(filtered_plots)
-    _render_map(filtered_plots)
-
-    st.subheader("Training Records")
-    if filtered_training.empty:
-        st.info("No training records are linked to this recipient yet.")
-    else:
-        st.dataframe(filtered_training, use_container_width=True, hide_index=True)
+    record = selected.iloc[0]
+    _render_registration_details(record)
+    _render_parcel_mapping(record)

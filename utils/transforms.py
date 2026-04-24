@@ -6,6 +6,69 @@ from typing import Iterable
 import pandas as pd
 
 MASKED_VALUE = "[Hidden]"
+NOT_AVAILABLE = "Not Available"
+
+
+def format_column_name(col: str, overrides: dict[str, str] | None = None) -> str:
+    """Format technical column names into user-friendly labels.
+
+    Rules:
+    - remove underscores
+    - Title Case
+    - allow overrides for important/long fields
+    """
+    overrides = overrides or {}
+    key = str(col)
+    if key in overrides:
+        return overrides[key]
+
+    cleaned = re.sub(r"[_/]+", " ", key).strip()
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    titled = cleaned.title()
+
+    # Preserve common acronyms for a more polished UI.
+    # Example: "plot_id" -> "Plot ID", "homestead_gps" -> "Homestead GPS".
+    titled = re.sub(r"\bId\b", "ID", titled)
+    titled = re.sub(r"\bGps\b", "GPS", titled)
+    titled = re.sub(r"\bQaqc\b", "QA/QC", titled)
+    return titled
+
+
+def _is_blank(value: object) -> bool:
+    if value is None:
+        return True
+    if isinstance(value, float) and pd.isna(value):
+        return True
+    if value is pd.NA:
+        return True
+    text = str(value).strip()
+    return text == "" or text.lower() in {"none", "nan", "<na>"}
+
+
+def ui_safe_frame(
+    frame: pd.DataFrame,
+    *,
+    column_overrides: dict[str, str] | None = None,
+    rename_columns: bool = True,
+) -> pd.DataFrame:
+    """Prepare a dataframe for display: friendly headers + Not Available values."""
+    if frame is None or frame.empty:
+        return frame.copy() if isinstance(frame, pd.DataFrame) else pd.DataFrame()
+
+    display = frame.copy()
+
+    # Replace blanks/NA-like values with "Not Available"
+    for column in display.columns:
+        display[column] = display[column].apply(
+            lambda v: NOT_AVAILABLE if _is_blank(v) else v
+        )
+
+    if rename_columns:
+        display = display.rename(
+            columns={c: format_column_name(c, column_overrides) for c in display.columns}
+        )
+
+    return display
 
 
 def clean_column_name(column_name: object) -> str:

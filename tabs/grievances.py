@@ -7,7 +7,13 @@ from pandas.api.types import is_scalar
 from utils.auth import AuthContext
 from utils.config import ALLOW_SENSITIVE_UNMASK
 from utils.loaders import load_grievance_intake, load_grievance_resolution
-from utils.transforms import ensure_columns, join_grievance_data, mask_columns, normalize_yes_no_fields
+from utils.transforms import (
+    ensure_columns,
+    join_grievance_data,
+    mask_columns,
+    normalize_yes_no_fields,
+    ui_safe_frame,
+)
 
 SENSITIVE_COLUMNS = [
     "complainant_name",
@@ -121,7 +127,7 @@ def _render_details_panel(frame: pd.DataFrame) -> None:
         return str(value)
 
     detail_frame["Value"] = detail_frame["Value"].apply(_safe_text)
-    st.dataframe(detail_frame, use_container_width=True, hide_index=True)
+    st.dataframe(ui_safe_frame(detail_frame, rename_columns=False), use_container_width=True, hide_index=True)
 
 
 def _build_display_frame(frame: pd.DataFrame) -> pd.DataFrame:
@@ -203,7 +209,7 @@ def render(auth_context: AuthContext) -> None:
 
     masked_frame = filtered_frame if show_sensitive else _mask_sensitive_fields(filtered_frame)
     display_frame = _build_display_frame(masked_frame)
-    st.dataframe(display_frame, use_container_width=True, hide_index=True)
+    st.dataframe(ui_safe_frame(display_frame), use_container_width=True, hide_index=True)
 
     with st.expander("Selected Grievance Details", expanded=False):
         _render_details_panel(masked_frame)

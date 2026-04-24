@@ -1,5 +1,0 @@
-Inspection ID,Nursery Name,Batch ID,Species,Quality Status,Damaged Seedlings,Diseased Seedlings,Dead Seedlings,Inspection Date,Notes
-Q-001,West Nursery,B-001,Grevillea,Pass,45,12,18,2026-03-10,Minor transport damage isolated and treated.
-Q-002,West Nursery,B-002,Avocado,Review,32,20,11,2026-03-14,Observed moisture stress in one batch section.
-Q-003,East Nursery,B-003,Calliandra,Pass,25,9,7,2026-03-16,Healthy batch with low mortality.
-Q-004,Central Nursery,B-004,Grevillea,Fail,54,31,22,2026-03-20,Disease pressure requires follow-up and reinspection.
