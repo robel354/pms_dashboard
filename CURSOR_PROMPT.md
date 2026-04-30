@@ -7,7 +7,7 @@ Recipient Dashboard is an internal Streamlit application for operational monitor
 Required tabs:
 
 1. Recipient Overview
-2. Trees & Seedlings
+2. Seedlings
 3. Training
 4. Documents
 5. Grievances

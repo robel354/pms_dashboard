@@ -14,7 +14,7 @@ Recipient Dashboard is an internal Streamlit application for operational monitor
 ## Required tabs
 
 1. Recipient Overview
-2. Trees & Seedlings
+2. Seedlings
 3. Training
 4. Documents
 5. Grievances
@@ -105,7 +105,7 @@ Current handling rules:
 Use this project context:
 
 - Internal Streamlit dashboard called Recipient Dashboard
-- Tabs: Recipient Overview, Trees & Seedlings, Training, Documents, Grievances, Nursery
+- Tabs: Recipient Overview, Seedlings, Training, Documents, Grievances, Nursery
 - Core keys: `recipient_id`, `plot_id`, `grievance_id`, `batch_id`
 - Security-sensitive app: authenticated users only, authorized users only
 - No public raw document URLs

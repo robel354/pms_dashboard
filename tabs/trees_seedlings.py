@@ -79,7 +79,7 @@ def render(auth_context: AuthContext) -> None:
     """Render trees & seedlings insights from Kobo nursery exports."""
     frame = load_nursery_batch_intake()
 
-    st.header("Trees & Seedlings")
+    st.header("Seedlings")
     st.caption(f"Data source: `{auth_context.environment}`")
 
     if frame.empty:

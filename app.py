@@ -25,7 +25,7 @@ def configure_page() -> None:
 
 TABS: dict[str, TabRenderer] = {
     "Recipient Overview": recipient_overview.render,
-    "Trees & Seedlings": trees_seedlings.render,
+    "Seedlings": trees_seedlings.render,
     "Training": training.render,
     "Documents": documents.render,
     "Grievances": grievances.render,
