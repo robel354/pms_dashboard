@@ -136,8 +136,9 @@ def _render_registration_details(record: pd.Series) -> None:
         ),
     ]
 
-    for title, items in sections:
-        with st.expander(title, expanded=False):
+    section_tabs = st.tabs([title for title, _ in sections])
+    for tab, (title, items) in zip(section_tabs, sections, strict=False):
+        with tab:
             detail_frame = pd.DataFrame(items, columns=["Field", "Value"])
             st.dataframe(detail_frame, use_container_width=True, hide_index=True)
 
@@ -171,23 +172,34 @@ def _render_parcel_mapping(record: pd.Series) -> None:
     else:
         st.info("No usable GPS coordinates were found for this registration.")
 
-    with st.expander("Land Tenure & Disputes", expanded=False):
-        tenure_items = [
-            ("Land Tenure Type", _na(record.get("land_tenure_type"))),
-            ("Tenure Evidence", _na(record.get("tenure_evidence"))),
-            ("Known Disputes Or Overlapping Claims", _na(record.get("known_disputes_or_overlapping_claims"))),
-            ("Description Of Dispute Or Overlap", _na(record.get("description_of_dispute_or_overlap"))),
-        ]
-        st.dataframe(pd.DataFrame(tenure_items, columns=["Field", "Value"]), use_container_width=True, hide_index=True)
+    detail_sections: list[tuple[str, list[tuple[str, str]]]] = [
+        (
+            "Land Tenure & Disputes",
+            [
+                ("Land Tenure Type", _na(record.get("land_tenure_type"))),
+                ("Tenure Evidence", _na(record.get("tenure_evidence"))),
+                ("Known Disputes Or Overlapping Claims", _na(record.get("known_disputes_or_overlapping_claims"))),
+                ("Description Of Dispute Or Overlap", _na(record.get("description_of_dispute_or_overlap"))),
+            ],
+        ),
+        (
+            "FCA Status",
+            [
+                (
+                    "Fca Signed",
+                    _na(record.get("has_the_participant_signed_a_farmer_and_community_agreement_fca_form")),
+                ),
+                ("Submission Time", _na(record.get("submission_time"))),
+                ("Submitted By", _na(record.get("submitted_by"))),
+                ("Status", _na(record.get("status"))),
+            ],
+        ),
+    ]
 
-    with st.expander("FCA Status", expanded=False):
-        fca_items = [
-            ("Fca Signed", _na(record.get("has_the_participant_signed_a_farmer_and_community_agreement_fca_form"))),
-            ("Submission Time", _na(record.get("submission_time"))),
-            ("Submitted By", _na(record.get("submitted_by"))),
-            ("Status", _na(record.get("status"))),
-        ]
-        st.dataframe(pd.DataFrame(fca_items, columns=["Field", "Value"]), use_container_width=True, hide_index=True)
+    detail_tabs = st.tabs([title for title, _ in detail_sections])
+    for tab, (title, items) in zip(detail_tabs, detail_sections, strict=False):
+        with tab:
+            st.dataframe(pd.DataFrame(items, columns=["Field", "Value"]), use_container_width=True, hide_index=True)
 
 
 def render(auth_context: AuthContext) -> None:
